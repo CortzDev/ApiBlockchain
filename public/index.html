@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockchain Validator - SuperTechStore</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      font-weight: 300;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 35px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-bottom: 35px;
+    }
+
+    button {
+      padding: 14px 20px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: #2c3e50;
+    }
+
+    .btn-primary:hover {
+      background: #34495e;
+    }
+
+    .btn-success {
+      background: #27ae60;
+    }
+
+    .btn-success:hover {
+      background: #229954;
+    }
+
+    .btn-info {
+      background: #3498db;
+    }
+
+    .btn-info:hover {
+      background: #2980b9;
+    }
+
+    .btn-warning {
+      background: #f39c12;
+    }
+
+    .btn-warning:hover {
+      background: #e67e22;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn-dark {
+      background: #34495e;
+    }
+
+    .btn-dark:hover {
+      background: #2c3e50;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .output-container {
+      background: #1e1e1e;
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 350px;
+      max-height: 550px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+    }
+
+    pre {
+      color: #d4d4d4;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .loading {
+      text-align: center;
+      color: #999;
+      padding: 20px;
+      font-style: italic;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 25px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.online {
+      background: #27ae60;
+      box-shadow: 0 0 8px rgba(39, 174, 96, 0.5);
+    }
+
+    .status-dot.offline {
+      background: #e74c3c;
+      box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: stretch;
+    }
+
+    .input-group label {
+      display: none;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    input::placeholder {
+      color: #95a5a6;
+    }
+
+    .footer {
+      text-align: center;
+      color: white;
+      margin-top: 35px;
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .footer p {
+      margin: 5px 0;
+    }
+
+    /* Scrollbar personalizado */
+    .output-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .output-container::-webkit-scrollbar-track {
+      background: #2d2d2d;
+      border-radius: 4px;
+    }
+
+    .output-container::-webkit-scrollbar-thumb {
+      background: #3498db;
+      border-radius: 4px;
+    }
+
+    .output-container::-webkit-scrollbar-thumb:hover {
+      background: #2980b9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .button-group {
+        grid-template-columns: 1fr;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Blockchain Validator</h1>
+      <p class="subtitle">SuperTechStore - Sistema de Validación de Nonces y Bloques</p>
+    </header>
+
+    <div class="card">
+      <div class="status-bar">
+        <div class="status-item">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Verificando estado del servidor...</span>
+        </div>
+        <div class="status-item">
+          <span id="blockCount">Bloques: --</span>
+        </div>
+      </div>
+
+      <div class="section-title">Operaciones Principales</div>
+      <div class="button-group">
+        <button class="btn-primary" onclick="getHealth()">
+          Verificar Servidor
+        </button>
+        <button class="btn-success" onclick="getInfo()">
+          Información Blockchain
+        </button>
+        <button class="btn-info" onclick="validateChain()">
+          Validar Cadena Completa
+        </button>
+        <button class="btn-warning" onclick="getLastNonce()">
+          Último Nonce
+        </button>
+      </div>
+
+      <div class="section-title">Validación de Bloques</div>
+      <div class="input-group">
+        <input 
+          type="number" 
+          id="blockIndex" 
+          placeholder="Índice del bloque (0, 1, 2...)" 
+          min="0"
+        >
+        <button class="btn-info" onclick="validateBlock()">
+          Validar Bloque
+        </button>
+      </div>
+
+      <div class="section-title">Validación de Nonce</div>
+      <div class="input-group">
+        <input 
+          type="number" 
+          id="nonceIndex" 
+          placeholder="Índice del bloque" 
+          min="0"
+        >
+        <input 
+          type="text" 
+          id="nonceValue" 
+          placeholder="Valor del nonce"
+        >
+        <button class="btn-danger" onclick="validateNonce()">
+          Validar Nonce
+        </button>
+      </div>
+
+      <button class="btn-dark" onclick="clearOutput()" style="width: 100%; margin: 20px 0;">
+        Limpiar Consola
+      </button>
+
+      <div class="section-title">Respuesta del Servidor</div>
+      <div class="output-container">
+        <pre id="output">Esperando operación...</pre>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 SuperTechStore - Proyecto DS3</p>
+      <p>Sistema de Validación Blockchain | Node.js + Express + PostgreSQL</p>
+    </div>
+  </div>
+
+  <script>
+    // Verificar servidor al cargar la página
+    window.addEventListener('load', async () => {
+      await checkServerStatus();
+    });
+
+    async function checkServerStatus() {
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        
+        if (data.status === 'ok') {
+          document.getElementById('statusDot').className = 'status-dot online';
+          document.getElementById('statusText').textContent = 'Servidor en línea';
+          await updateBlockCount();
+        }
+      } catch (error) {
+        document.getElementById('statusDot').className = 'status-dot offline';
+        document.getElementById('statusText').textContent = 'Servidor desconectado';
+      }
+    }
+
+    async function updateBlockCount() {
+      try {
+        const res = await fetch('/api/blockchain/info');
+        const data = await res.json();
+        document.getElementById('blockCount').textContent = `Bloques: ${data.totalBlocks}`;
+      } catch (error) {
+        console.error('Error obteniendo conteo de bloques:', error);
+      }
+    }
+
+    function showLoading() {
+      document.getElementById('output').textContent = 'Procesando solicitud...';
+    }
+
+    function displayResult(data) {
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getHealth() {
+      showLoading();
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        displayResult(data);
+        await checkServerStatus();
+      } catch (error) {
+        displayResult({ 
+          error: 'Error de conexión con el servidor', 
+          details: error.message 
+        });
+      }
+    }
+
+    async function getInfo() {
+      showLoading();
+      try {
+        const res = await fetch('/api/blockchain/info');
+        const data = await res.json();
+        displayResult(data);
+        await updateBlockCount();
+      } catch (error) {
+        displayResult({ 
+          error: 'Error al obtener información de blockchain', 
+          details: error.message 
+        });
+      }
+    }
+
+    async function validateChain() {
+      showLoading();
+      try {
+        const res = await fetch('/api/blockchain/validate');
+        const data = await res.json();
+        displayResult(data);
+      } catch (error) {
+        displayResult({ 
+          error: 'Error al validar la cadena de bloques', 
+          details: error.message 
+        });
+      }
+    }
+
+    async function getLastNonce() {
+      showLoading();
+      try {
+        const res = await fetch('/api/blockchain/last-nonce');
+        const data = await res.json();
+        displayResult(data);
+      } catch (error) {
+        displayResult({ 
+          error: 'Error al obtener el último nonce', 
+          details: error.message 
+        });
+      }
+    }
+
+    async function validateBlock() {
+      const index = document.getElementById('blockIndex').value;
+      
+      if (!index && index !== '0') {
+        alert('Por favor, ingrese el índice del bloque');
+        return;
+      }
+
+      showLoading();
+      try {
+        const res = await fetch(`/api/block/${index}/validate`);
+        const data = await res.json();
+        displayResult(data);
+      } catch (error) {
+        displayResult({ 
+          error: 'Error al validar el bloque', 
+          details: error.message 
+        });
+      }
+    }
+
+    async function validateNonce() {
+      const index = document.getElementById('nonceIndex').value;
+      const nonce = document.getElementById('nonceValue').value;
+
+      if ((!index && index !== '0') || !nonce) {
+        alert('Por favor, complete ambos campos: índice y nonce');
+        return;
+      }
+
+      showLoading();
+      try {
+        const res = await fetch('/api/block/validate-nonce', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            index: parseInt(index), 
+            nonce: nonce 
+          })
+        });
+        const data = await res.json();
+        displayResult(data);
+      } catch (error) {
+        displayResult({ 
+          error: 'Error al validar el nonce', 
+          details: error.message 
+        });
+      }
+    }
+
+    function clearOutput() {
+      document.getElementById('output').textContent = 'Consola limpiada. Esperando operación...';
+    }
+  </script>
+</body>
+</html>
